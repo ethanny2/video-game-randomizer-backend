@@ -1,0 +1,6 @@
+{
+  "name": "Video Game Randomizer Backend",
+  "description": "A PHP server that hosts my backend for the video game randomizer site",
+  "repository": "https://github.com/heroku/php-getting-started",
+  "addons": []
+}
