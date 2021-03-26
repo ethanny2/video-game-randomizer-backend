@@ -31,7 +31,7 @@ $app->get('/random', function () use ($app) {
         $imageArray = [];
         while ($row = $result->fetch_assoc()) {
             array_push($imageArray, $row);
-            $app['monolog']->info(sprintf("pushed game with name '%d' into imageArray.", $row['name']));
+            $app['monolog']->info(sprintf("pushed game with name '%s' into imageArray.", $row['name']));
             // $imageArray[] = $row;
         }
         $app['monolog']->info(sprintf("imageArray length is '%d'.", count($imageArray)));
