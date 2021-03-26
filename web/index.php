@@ -31,10 +31,10 @@ $app->get('/random', function () use ($app) {
     $randomGameRows = "SELECT * FROM giant_bomb_games WHERE `cover` IS NOT NULL ORDER BY RAND() LIMIT 20";
     $result = $conn->query($randomGameRows);
     $imageArray = [];
-    return $result->num_rows;
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
-            array_push($imageArray, $row);
+            // array_push($imageArray, $row);
+            $imageArray[] = $row;
         }
         return json_encode($imageArray);
     }
