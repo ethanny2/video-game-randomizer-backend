@@ -15,4 +15,7 @@ $app->get('/random', function() use($app) {
 });
 
 
+$app->run();
+
+
 ?>
