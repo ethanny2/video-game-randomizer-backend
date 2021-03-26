@@ -27,12 +27,14 @@ $app->get('/random', function () use ($app) {
     $result = $conn->query($randomGameRows);
     $app['monolog']->debug('Testing the Monolog logging.');
     $app['monolog']->info(sprintf("Number rows '%d'.", $result->num_rows));
-    $imageArray = [];
     if ($result->num_rows > 0) {
+        $imageArray = [];
         while ($row = $result->fetch_assoc()) {
-            // array_push($imageArray, $row);
-            $imageArray[] = $row;
+            array_push($imageArray, $row);
+            $app['monolog']->info(sprintf("pushed game with name '%d' into imageArray.", $row['name']));
+            // $imageArray[] = $row;
         }
+        $app['monolog']->info(sprintf("imageArray length is '%d'.", count($imageArray)));
         return json_encode($imageArray);
     }
     // $conn->close();
