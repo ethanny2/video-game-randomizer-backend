@@ -9,10 +9,6 @@ error_reporting(0);
 $conn = new mysqli($servername, $username, $password, $dbname, $port);
 $json = file_get_contents('php://input');
 $reqObj = json_decode($json);
-// echo json_encode(!empty($reqObj->scoreArray));
-// echo json_encode($reqObj->genreArray);
-// echo  json_encode( [1,2,3]) ;
-
 
  $platforms;
  $genres;
@@ -302,35 +298,6 @@ $chosenID;
       $sorry= ['Sorry'=>"Sorry Nothing found! =p"];
   echo json_encode($sorry);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }/*End of the else if user choose anything */
-
-
-
-
-
-
-  
-
-
-
-
-
-
-  
-
    $conn->close();
 ?>
