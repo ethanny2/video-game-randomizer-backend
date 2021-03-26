@@ -3,6 +3,7 @@
 $url = parse_url($_SERVER['REQUEST_URL'], PHP_URL_PATH);
 $uri = explode( '/', $uri );
 $restAction  = end($uri);
+echo $restAction;
 if($uri){
   if(str_contains($restAction, "random")){
     echo "RANDOM";
