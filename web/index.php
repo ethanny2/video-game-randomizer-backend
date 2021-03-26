@@ -22,10 +22,11 @@ $app->register(new Silex\Provider\MonologServiceProvider(), array(
   ));
 
 $app->get('/random', function () use ($app) {   
-    $app["monolog"]->addDebug('logging output.');
     global $conn;
     $randomGameRows = "SELECT * FROM giant_bomb_games WHERE `cover` IS NOT NULL ORDER BY RAND() LIMIT 20";
     $result = $conn->query($randomGameRows);
+    $app['monolog']->debug('Testing the Monolog logging.');
+    $app['monolog']->info(sprintf("Number rows '%d'.", $result->num_rows));
     $imageArray = [];
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
