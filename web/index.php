@@ -8,7 +8,6 @@ $app['debug'] = true;
 
 $app->get('/random', function () use ($app) {  
     //Get Heroku ClearDB connection information
-    return "RANDOM ROUTE ENTERED";
     $cleardb_url = parse_url(getenv("CLEARDB_DATABASE_URL"));
     $cleardb_server = $cleardb_url["host"];
     $cleardb_username = $cleardb_url["user"];
@@ -18,6 +17,17 @@ $app->get('/random', function () use ($app) {
     $query_builder = true;
     // Connect to DB
     $conn = new mysqli($cleardb_server, $cleardb_username, $cleardb_password, $cleardb_db);
+    if ($conn->connect_errno) {
+        printf("Connect failed: %s\n", $conn->connect_error);
+        exit();
+    }
+
+    /* check if server is alive */
+    if ($conn->ping()) {
+        printf ("Our connection is ok!\n");
+    } else {
+        printf ("Error: %s\n", $conn->error);
+    }
     $randomGameRows = "SELECT * FROM giant_bomb_games WHERE `cover` IS NOT NULL ORDER BY RAND() LIMIT 20";
     $result = $conn->query($randomGameRows);
     $imageArray = [];
