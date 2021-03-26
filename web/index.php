@@ -25,20 +25,21 @@ $app->get('/random', function () use ($app) {
     global $conn;
     // $randomGameRows = "SELECT * FROM giant_bomb_games WHERE `cover` IS NOT NULL ORDER BY RAND() LIMIT 20";
     //Table is around 20MB order by RAND() is getting exponentially slower and may timeout
-    $randomGameRows = "SELECT * FROM giant_bomb_games AS r1 JOIN (SELECT CEIL(RAND() * (SELECT MAX(id) FROM random)) AS id) AS r2 WHERE r1.id >= r2.id ORDER BY r1.id ASC LIMIT 20";
+    $randomGameRows = "SELECT * FROM giant_bomb_games AS t1 JOIN (SELECT id FROM giant_bomb_games ORDER BY RAND() LIMIT 20) as t2 ON t1.id=t2.id";
     $result = $conn->query($randomGameRows);
     $app['monolog']->debug('Testing the Monolog logging.');
     $app['monolog']->info(sprintf("Number rows '%d'.", $result->num_rows));
+    $imageArray = [];
     if ($result->num_rows > 0) {
-        $imageArray = [];
         while ($row = $result->fetch_assoc()) {
             array_push($imageArray, $row);
             $app['monolog']->info(sprintf("pushed game with name '%s' into imageArray.", $row['name']));
             // $imageArray[] = $row;
         }
         $app['monolog']->info(sprintf("imageArray length is '%d'.", count($imageArray)));
-        return json_encode($imageArray);
     }
+    return json_encode($imageArray);
+
     // $conn->close();
 });
 
