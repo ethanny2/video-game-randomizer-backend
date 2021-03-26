@@ -19,35 +19,29 @@ $conn->set_charset("utf8");
 // Register the monolog logging service
 $app->register(new Silex\Provider\MonologServiceProvider(), array(
     'monolog.logfile' => 'php://stderr',
-  ));
+));
 
 $app->get('/random', function () use ($app) {   
     global $conn;
-    // $randomGameRows = "SELECT * FROM giant_bomb_games WHERE `cover` IS NOT NULL ORDER BY RAND() LIMIT 20";
     //Table is around 20MB order by RAND() is getting exponentially slower and may timeout?
+    // $randomGameRows = "SELECT * FROM giant_bomb_games WHERE `cover` IS NOT NULL ORDER BY RAND() LIMIT 20";
     $randomGameRows = "SELECT * FROM giant_bomb_games AS t1 JOIN (SELECT id FROM giant_bomb_games ORDER BY RAND() LIMIT 20) as t2 ON t1.id=t2.id";
     $result = $conn->query($randomGameRows);
-    $app['monolog']->debug('Testing the Monolog logging.');
-    $app['monolog']->info(sprintf("Number rows '%d'.", $result->num_rows));
     $imageArray = [];
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
             array_push($imageArray, $row);
-            $app['monolog']->info(sprintf("pushed game with name '%s' into imageArray.", $row['name']));
-            // $imageArray[] = $row;
         }
-        $app['monolog']->info(sprintf("imageArray length is '%d'.", count($imageArray)));
     }
     $json =  json_encode($imageArray, JSON_UNESCAPED_UNICODE);
-    // echo json_last_error_msg(); // Print out the error if any
     return $json;
-    // $conn->close();
 });
 
 $app->get('/', function () use ($app) {
     return "Hello world from index page!";
 });
 
+// Query with filters
 $app->post('/query', function () use ($app) {
     global $conn;    // Connect to DB
     $json = file_get_contents('php://input');
@@ -304,14 +298,13 @@ $app->post('/query', function () use ($app) {
                 $chosenID = $row["id"];
                 $contentArray2 = ['name' => utf8_encode($row['name']) , 'id' => utf8_encode($row['id']) , 'cover' => utf8_encode($row['cover']) , 'releaseDate' => utf8_encode($row['release_data']) , 'summary' => utf8_encode($row['summary']) , 'rating' => utf8_encode($row['rating']) , 'info' => utf8_encode($row['url']) , 'main_story' => utf8_encode($row['main_story']) , 'main_extras' => utf8_encode($row['main_extras']) , 'completionist' => utf8_encode($row['completionist']) , 'combined' => utf8_encode($row['combined']) , 'genres' => $exploedGenre, 'platforms' => $explodedPlat];
             }
-            return json_encode($contentArray2);            
+            return json_encode($contentArray2, JSON_UNESCAPED_UNICODE);            
         }
         else {
             $sorry = ['Sorry' => "Sorry Nothing found! =p"];
             return json_encode($sorry);
         }
     } /*End of the else if user choose anything */
-    // $conn->close();
 });
 
 
@@ -390,11 +383,8 @@ function scrapeRomList($url) {
 }
 
 function fetchdata($data, $start, $end) {
-    //echo $data;
     $data = stristr($data, $start);
-    //echo $data;
     $data = substr($data, strlen($start));
-    //echo $data;
     $stop = stripos($data, $end);
     $data = substr($data, 0, $stop);
     return $data;
