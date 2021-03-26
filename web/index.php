@@ -1,17 +1,44 @@
 <?php
-// echo "Hello World! This is the index page!";
-$url = parse_url($_SERVER['REQUEST_URL'], PHP_URL_PATH);
-$uri = explode( '/', $uri );
-$restAction  = end($uri);
-echo $restAction;
-if($uri){
-  if(str_contains($restAction, "random")){
-    echo "RANDOM";
-  }else if(str_contains($restAction, "query")){
-    echo "QUERY";
-  }else if(str_contains($restAction, "scrape")){
-    echo "SCRAPE";
-  }
-}
-?>
+header('Access-Control-Allow-Origin: *');
+include_once 'Request.php';
+include_once 'Router.php';
+$router = new Router(new Request);
 
+$router->get('/random', function() {
+  //Get Heroku ClearDB connection information
+  $cleardb_url = parse_url(getenv("CLEARDB_DATABASE_URL"));
+  $cleardb_server = $cleardb_url["host"];
+  $cleardb_username = $cleardb_url["user"];
+  $cleardb_password = $cleardb_url["pass"];
+  $cleardb_db = substr($cleardb_url["path"],1);
+  $active_group = 'default';
+  $query_builder = TRUE;
+  // Connect to DB
+  $conn = new mysqli($cleardb_server, $cleardb_username, $cleardb_password, $cleardb_db);
+  // $conn = new mysqli($servername, $username, $password, $dbname, $port);
+  $randomGameRows = "SELECT * FROM giant_bomb_games WHERE `cover` IS NOT NULL ORDER BY RAND() LIMIT 20";
+  $result = $conn->query($randomGameRows);
+  $imageArray = [];
+  if($result->num_rows > 0){
+    while($row = $result->fetch_assoc()){
+      array_push($imageArray, $row);
+    }
+    // echo var_dump($imageArray);
+    echo json_encode($imageArray);
+  }
+  $conn->close();
+});
+
+
+// $router->get('/profile', function($request) {
+//   return <<<HTML
+//   <h1>Profile</h1>
+// HTML;
+// });
+
+// $router->post('/data', function($request) {
+
+//   return json_encode($request->getBody());
+// });
+
+?>
