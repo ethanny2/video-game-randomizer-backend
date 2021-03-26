@@ -1,6 +1,4 @@
 <?php
-   header('Access-Control-Allow-Origin: *');
-	 echo "Hello World";
-
+echo "Hello World! This is the index page!";
 ?>
 
