@@ -15,7 +15,7 @@ $active_group = 'default';
 $query_builder = true;
 // Connect to DB
 $conn = new mysqli($cleardb_server, $cleardb_username, $cleardb_password, $cleardb_db);
-
+$conn->set_charset("utf8");
 // Register the monolog logging service
 $app->register(new Silex\Provider\MonologServiceProvider(), array(
     'monolog.logfile' => 'php://stderr',
