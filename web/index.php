@@ -16,7 +16,13 @@ $query_builder = true;
 // Connect to DB
 $conn = new mysqli($cleardb_server, $cleardb_username, $cleardb_password, $cleardb_db);
 
+// Register the monolog logging service
+$app->register(new Silex\Provider\MonologServiceProvider(), array(
+    'monolog.logfile' => 'php://stderr',
+  ));
+
 $app->get('/random', function () use ($app) {   
+    $app["monolog"]->addDebug('logging output.');
     global $conn;
     $randomGameRows = "SELECT * FROM giant_bomb_games WHERE `cover` IS NOT NULL ORDER BY RAND() LIMIT 20";
     $result = $conn->query($randomGameRows);
@@ -27,9 +33,6 @@ $app->get('/random', function () use ($app) {
             $imageArray[] = $row;
         }
         return json_encode($imageArray);
-    }
-    else {
-        return "No results";
     }
     // $conn->close();
 });
