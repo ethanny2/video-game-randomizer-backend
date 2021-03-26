@@ -1,7 +1,7 @@
 <?php
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token');
+	  header('Access-Control-Allow-Origin: *');
+      header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+      header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, X-Requested-With");
 
 require ('../vendor/autoload.php');
 
@@ -39,6 +39,11 @@ $app->get('/random', function () use ($app) {
     $json =  json_encode($imageArray, JSON_UNESCAPED_UNICODE);
     return $json;
 });
+
+$app->options("{anything}", function () {
+    return new \Symfony\Component\HttpFoundation\JsonResponse(null, 204);
+})->assert("anything", ".*");
+
 
 $app->get('/', function () use ($app) {
     return "Hello world from index page!";
