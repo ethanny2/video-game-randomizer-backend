@@ -24,7 +24,7 @@ $app->register(new Silex\Provider\MonologServiceProvider(), array(
 $app->get('/random', function () use ($app) {   
     global $conn;
     // $randomGameRows = "SELECT * FROM giant_bomb_games WHERE `cover` IS NOT NULL ORDER BY RAND() LIMIT 20";
-    //Table is around 20MB order by RAND() is getting exponentially slower and may timeout
+    //Table is around 20MB order by RAND() is getting exponentially slower and may timeout?
     $randomGameRows = "SELECT * FROM giant_bomb_games AS t1 JOIN (SELECT id FROM giant_bomb_games ORDER BY RAND() LIMIT 20) as t2 ON t1.id=t2.id";
     $result = $conn->query($randomGameRows);
     $app['monolog']->debug('Testing the Monolog logging.');
@@ -38,8 +38,9 @@ $app->get('/random', function () use ($app) {
         }
         $app['monolog']->info(sprintf("imageArray length is '%d'.", count($imageArray)));
     }
-    return json_encode($imageArray);
-
+    $json =  json_encode($imageArray);
+    echo json_last_error_msg(); // Print out the error if any
+    return $json;
     // $conn->close();
 });
 
