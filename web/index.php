@@ -39,7 +39,7 @@ $app->get('/random', function () use ($app) {
         $app['monolog']->info(sprintf("imageArray length is '%d'.", count($imageArray)));
     }
     $json =  json_encode($imageArray, JSON_UNESCAPED_UNICODE);
-    echo json_last_error_msg(); // Print out the error if any
+    // echo json_last_error_msg(); // Print out the error if any
     return $json;
     // $conn->close();
 });
